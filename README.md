@@ -39,8 +39,8 @@ Community project with Java and Springframework
 ## 기술 스택
 커뮤니티 프로젝트의 백엔드 구현을 위해 아래와 같은 기술 스택과 라이브러리가 사용될 수 있습니다.
 
-- 언어: Java 11
-- 프레임워크: Spring Boot 2.5
+- 언어: Java 11 - eclipse
+- 프레임워크: Spring Boot 2.7.11
 - ORM: Spring Data JPA
 - 데이터베이스: MySQL 8.0
 - 빌드 및 의존성 관리: Gradle
