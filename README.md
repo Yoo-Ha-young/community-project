@@ -35,6 +35,8 @@ Community project with Java and Springframework
 - user_id: int, FK (게시글 작성자 고유 번호)
 - created_at: datetime (게시글 작성 일시)
 
+## Trouble Shooting
+https://github.com/Yoo-Ha-young/community-project/blob/main/doc/TROUBLE_SHOOTING.md
 
 ## 기술 스택
 커뮤니티 프로젝트의 백엔드 구현을 위해 아래와 같은 기술 스택과 라이브러리가 사용될 수 있습니다.
