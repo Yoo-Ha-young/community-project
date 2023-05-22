@@ -28,7 +28,7 @@ Community project with Java and Springframework
 - password: varchar(100) (유저 비밀번호)
 - created_at: datetime (계정 생성 일시)
 
-#### [Post Table]
+#### [Board Table]
 - id: int, PK (게시글 고유 번호)
 - title: varchar(100) (게시글 제목)
 - content: text (게시글 내용)
