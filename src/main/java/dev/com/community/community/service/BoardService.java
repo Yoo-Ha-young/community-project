@@ -4,8 +4,13 @@ import dev.com.community.community.model.BoardDTO;
 import dev.com.community.community.repository.BoardRepository;
 import dev.com.community.community.model.BoardUpdateDTO;
 import dev.com.community.community.entity.BoardEntity;
+import dev.com.community.user.entity.UserEntity;
+import dev.com.community.user.repository.UserRepository;
+import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,10 +19,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
 
-    // 글 추가
-    public BoardEntity save(BoardDTO request) {
-        return boardRepository.save(request.toEntity());
+    // 로그인 된 사용자만 글 추가가 가능
+    public BoardEntity save(BoardDTO board, Principal principal) {
+        String userEmail = principal.getName();
+        UserEntity user = userRepository.findByEmail(board.toEntity().getUserEntity().getEmail())
+            .orElseThrow(() -> new UsernameNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + userEmail));
+
+//        board.toEntity().setUserEntity(user);
+        return boardRepository.save(board.toEntity());
     }
 
     // 목록 조회

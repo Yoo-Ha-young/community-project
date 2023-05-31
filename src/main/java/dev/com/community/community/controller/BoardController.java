@@ -8,6 +8,7 @@ import dev.com.community.community.entity.BoardEntity;
 import dev.com.community.community.model.BoardResponseDTO;
 import dev.com.community.community.service.BoardService;
 import dev.com.community.community.model.BoardUpdateDTO;
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -21,47 +22,58 @@ import java.util.List;
 public class BoardController {
     private final BoardService boardService;
 
-    // 글 추가 api
+    // 게시판 서비스 클래스에 이용자 정보에 대한 예외처리 부분 추가 구현
+    // TODO : 연결 시키고 글 작성하나 해보기 - 확인
+
+    // 게시글 작성
     @PostMapping
-    public ResponseEntity<BoardEntity> addBoard(@RequestBody BoardDTO addBoardDTO){
-        BoardEntity savedBoardEntity = boardService.save(addBoardDTO);
-        return  ResponseEntity.status(HttpStatus.CREATED)
-            .body(savedBoardEntity);
+    public ResponseEntity<BoardEntity> createBoard(
+            Principal principal, @RequestBody BoardDTO board) {
+        BoardEntity savedBoardEntity = boardService.save(board, principal);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedBoardEntity);
     }
 
-    // 조회 api
+    // 게시글 목록 조회
     @GetMapping
     public ResponseEntity<List<BoardResponseDTO>> findAllBoards() {
-        List<BoardResponseDTO> boards = boardService.findAll()
+        List<BoardResponseDTO> boards;
+
+        boards = boardService.findAll()
             .stream()
-            .map(BoardResponseDTO::new)
+            .map(BoardResponseDTO::of)
+
             .collect(toList());
 
         return ResponseEntity.ok()
             .body(boards);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<BoardResponseDTO> findBoard(@PathVariable long id){
-        BoardEntity board = boardService.findById(id);
-
-        return ResponseEntity.ok()
-            .body(new BoardResponseDTO(board));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteBoard(@PathVariable long id){
-        boardService.delete(id);
-
-        return ResponseEntity.ok().build();
-    }
-
+    // 작성된 게시글 편집
     @PutMapping("/{id}")
     public ResponseEntity<?> updateBoard(@PathVariable long id, @RequestBody BoardUpdateDTO boardUpdateDTO){
         BoardEntity updatedBoard = boardService.update(id, boardUpdateDTO);
 
         return ResponseEntity.ok()
             .body(updatedBoard);
+    }
+
+    // TODO : 키워드로 게시물 검색 : 검색 결과를 게시글 목록(List)으로 보여준다.
+
+    // id로 게시글 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<BoardResponseDTO> findBoard(@PathVariable long id){
+        BoardEntity board = boardService.findById(id);
+    
+        return ResponseEntity.ok()
+            .body(BoardResponseDTO.of(board));
+    }
+
+    // 선택 게시글 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteBoard(@PathVariable long id){
+        boardService.delete(id);
+
+        return ResponseEntity.ok().build();
     }
 
 }
